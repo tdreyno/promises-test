@@ -1,26 +1,24 @@
-abstract class OurPromise<T> {
-  constructor(
-    fn: (resolver: (value: T) => void, rejecter: (error: any) => void) => void
-  ) {}
+import { OurPromise } from "./OurPromise";
 
-  abstract then<R>(
-    callback: (value: T, error: any) => R | ThisType<R>
-  ): ThisType<R>;
-
-  abstract catch<R>(callback: (error: any) => R | ThisType<R>): ThisType<T | R>;
-}
-
-class MyPromise<T> extends OurPromise<T> {
+export class MyPromise<T> extends OurPromise<T> {
   // Possible results of the promise.
-  protected value = undefined;
-  protected error = undefined;
+  protected value?: T;
+  protected error?: any;
 
   // Our current state.
-  protected state = "pending"; // Or resolved or rejected.
+  protected state: "pending" | "resolved" | "rejected" = "pending"; // Or resolved or rejected.
 
   // Subscribed callbacks.
-  protected resolveSubscribers: Array<(value: T, error: any) => void> = [];
+  protected resolveSubscribers: Array<(value?: T, error?: any) => void> = [];
   protected rejectSubscribers: Array<(error: any) => void> = [];
+
+  static resolve<T>(val: T): MyPromise<T> {
+    return new MyPromise<T>(resolver => resolver(val));
+  }
+
+  static reject<T = void>(error: any): MyPromise<T> {
+    return new MyPromise<T>((_, rejecter) => rejecter(error));
+  }
 
   // Controls for how code will resolve or reject this promise.
   constructor(
@@ -28,7 +26,7 @@ class MyPromise<T> extends OurPromise<T> {
   ) {
     super(fn);
 
-    fn(this.resolve, this.reject);
+    fn(this.resolve.bind(this), this.reject.bind(this));
   }
 
   // Resolving sets the value, the state and calls the callbacks.
@@ -36,7 +34,7 @@ class MyPromise<T> extends OurPromise<T> {
     this.value = val;
     this.state = "resolved";
 
-    this.resolveSubscribers.forEach(s => s(this.value, undefined));
+    this.resolveSubscribers.forEach(s => s(val, undefined));
     this.resolveSubscribers.length = 0;
   }
 
@@ -57,8 +55,8 @@ class MyPromise<T> extends OurPromise<T> {
     callback: (value: T, error: any) => R | MyPromise<R>
   ): MyPromise<R> {
     const promise = new MyPromise<R>((resolve, reject) =>
-      this.resolveSubscribers.push((value: T, error) => {
-        const result = callback(value, error);
+      this.resolveSubscribers.push((value, error) => {
+        const result = callback(value!, error);
 
         if (result instanceof MyPromise) {
           result.then((val, err) => {
@@ -76,10 +74,10 @@ class MyPromise<T> extends OurPromise<T> {
 
     switch (this.state) {
       case "resolved":
-        this.resolve(this.value);
+        this.resolve(this.value!);
 
       case "rejected":
-        this.reject(this.error);
+        this.reject(this.error!);
 
       case "pending":
         return promise;
@@ -91,20 +89,20 @@ class MyPromise<T> extends OurPromise<T> {
   ): MyPromise<T | R> {
     switch (this.state) {
       case "resolved":
-        return this;
+        return MyPromise.resolve<T | R>(this.value!);
 
       case "rejected": {
         const result = callback(this.error);
 
         if (result instanceof MyPromise) {
-          return result;
+          return result as MyPromise<T | R>;
         }
 
-        return new MyPromise(r => r(result));
+        return new MyPromise<T | R>(r => r(result));
       }
 
       case "pending": {
-        return new MyPromise((resolve, reject) =>
+        return new MyPromise<T | R>((resolve, reject) =>
           this.rejectSubscribers.push(error => {
             const result = callback(error);
 
