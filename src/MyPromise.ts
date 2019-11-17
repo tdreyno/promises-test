@@ -2,15 +2,15 @@ import { OurPromise } from "./OurPromise";
 
 export class MyPromise<T> extends OurPromise<T> {
   // Possible results of the promise.
-  protected value?: T;
-  protected error?: any;
+  private value?: T;
+  private error?: any;
 
   // Our current state.
-  protected state: "pending" | "resolved" | "rejected" = "pending"; // Or resolved or rejected.
+  private state: "pending" | "resolved" | "rejected" = "pending"; // Or resolved or rejected.
 
   // Subscribed callbacks.
-  protected resolveSubscribers: Array<(value?: T, error?: any) => void> = [];
-  protected rejectSubscribers: Array<(error: any) => void> = [];
+  private resolveSubscribers: Array<(value?: T, error?: any) => void> = [];
+  private rejectSubscribers: Array<(error: any) => void> = [];
 
   static resolve<T>(val: T): MyPromise<T> {
     return new MyPromise<T>(resolve => resolve(val));
@@ -30,7 +30,7 @@ export class MyPromise<T> extends OurPromise<T> {
   }
 
   // Resolving sets the value, the state and calls the callbacks.
-  protected resolve(val: T) {
+  private resolve(val: T) {
     this.value = val;
     this.state = "resolved";
 
@@ -39,7 +39,7 @@ export class MyPromise<T> extends OurPromise<T> {
   }
 
   // Resolving sets the error, the state and calls the callbacks.
-  protected reject(err: any) {
+  private reject(err: any) {
     this.error = err;
     this.state = "rejected";
 
