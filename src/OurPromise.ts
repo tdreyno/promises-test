@@ -1,6 +1,6 @@
 export abstract class OurPromise<T> {
   constructor(
-    fn: (resolver: (value: T) => void, rejecter: (error: any) => void) => void
+    fn: (resolve: (value: T) => void, reject: (error: any) => void) => void
   ) {}
 
   abstract then<R>(

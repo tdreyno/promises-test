@@ -13,16 +13,16 @@ export class MyPromise<T> extends OurPromise<T> {
   protected rejectSubscribers: Array<(error: any) => void> = [];
 
   static resolve<T>(val: T): MyPromise<T> {
-    return new MyPromise<T>(resolver => resolver(val));
+    return new MyPromise<T>(resolve => resolve(val));
   }
 
   static reject<T = void>(error: any): MyPromise<T> {
-    return new MyPromise<T>((_, rejecter) => rejecter(error));
+    return new MyPromise<T>((_, reject) => reject(error));
   }
 
   // Controls for how code will resolve or reject this promise.
   constructor(
-    fn: (resolver: (value: T) => void, rejecter: (error: any) => void) => void
+    fn: (resolve: (value: T) => void, reject: (error: any) => void) => void
   ) {
     super(fn);
 

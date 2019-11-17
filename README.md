@@ -94,7 +94,7 @@ Promises are a black box which may contain either nothing, a value or an error.
 ```typescript
 abstract class OurPromise<T> {
   constructor(
-    fn: (resolver: (value: T) => void, rejecter: (error: any) => void) => void
+    fn: (resolver: (value: T) => void, reject: (error: any) => void) => void
   ) {}
 
   abstract then<R>(

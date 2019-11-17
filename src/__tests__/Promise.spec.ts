@@ -21,13 +21,13 @@ describe("MyPromise", () => {
     test("should create a Promise immediately resolved to a value", () => {
       expect.assertions(1);
 
-      new MyPromise(resolver => resolver(5)).then(val => expect(val).toBe(5));
+      new MyPromise(resolve => resolve(5)).then(val => expect(val).toBe(5));
     });
 
     test("should create a Promise immediately errored to a message", () => {
       expect.assertions(1);
 
-      new MyPromise((_, rejecter) => rejecter("Failure")).then((_, err) =>
+      new MyPromise((_, reject) => reject("Failure")).then((_, err) =>
         expect(err).toBe("Failure")
       );
     });
@@ -74,10 +74,10 @@ describe("MyPromise", () => {
         .then(val => expect(val).toBe(5));
     });
 
-    test("should recover from error with chain to value", () => {
+    test("should recover from error with chain to promise", () => {
       MyPromise.reject("Failure")
         .catch(() => MyPromise.resolve(5))
-        .then((val: any) => expect(val).toBe(5));
+        .then(val => expect(val).toBe(5));
     });
   });
 });
