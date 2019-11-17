@@ -11,6 +11,10 @@ export abstract class OurPromise<T> {
     callback: (error: any) => T | R | ThisType<T | R>
   ): ThisType<T | R>;
 
+  static all<T>(promises: ThisType<T>[]): ThisType<T[]> {
+    throw new Error("Must implement static `all`");
+  }
+
   static resolve<T>(val: T): ThisType<T> {
     throw new Error("Must implement static `resolve`");
   }

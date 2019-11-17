@@ -17,6 +17,28 @@ describe("MyPromise", () => {
     });
   });
 
+  describe(".all", () => {
+    test("should resolve an array of promises and retain order", () => {
+      expect.assertions(1);
+
+      MyPromise.all([
+        MyPromise.resolve(1),
+        MyPromise.resolve(2),
+        MyPromise.resolve(3)
+      ]).then(val => expect(val).toMatchObject([1, 2, 3]));
+    });
+
+    test("should error on any error", () => {
+      expect.assertions(1);
+
+      MyPromise.all([
+        MyPromise.resolve(1),
+        MyPromise.reject<number>("Failure"),
+        MyPromise.resolve(3)
+      ]).then((_, err) => expect(err).toBe("Failure"));
+    });
+  });
+
   describe("constructor", () => {
     test("should create a Promise immediately resolved to a value", () => {
       expect.assertions(1);
@@ -33,7 +55,7 @@ describe("MyPromise", () => {
     });
   });
 
-  describe("then", () => {
+  describe(".prototype.then", () => {
     test("should chain success to value", () => {
       MyPromise.resolve(5)
         .then(val => val * 2)
@@ -59,7 +81,7 @@ describe("MyPromise", () => {
     });
   });
 
-  describe("catch", () => {
+  describe(".prototype.catch", () => {
     test("should not run on success", () => {
       const catcher = jest.fn();
 

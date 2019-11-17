@@ -12,6 +12,34 @@ export class MyPromise<T> extends OurPromise<T> {
   private resolveSubscribers: Array<(value?: T, error?: any) => void> = [];
   private rejectSubscribers: Array<(error: any) => void> = [];
 
+  static all<T>(promises: MyPromise<T>[]): MyPromise<T[]> {
+    return new MyPromise((resolve, reject) => {
+      const result: T[] = [];
+      let hasErrored = false;
+      let remainingPromises = promises.length;
+
+      promises.forEach((promise, i) =>
+        promise.then((value, error) => {
+          if (hasErrored) {
+            return;
+          }
+
+          if (error) {
+            hasErrored = true;
+            reject(error);
+          } else {
+            remainingPromises -= 1;
+            result[i] = value;
+
+            if (remainingPromises === 0) {
+              resolve(result);
+            }
+          }
+        })
+      );
+    });
+  }
+
   static resolve<T>(val: T): MyPromise<T> {
     return new MyPromise<T>(resolve => resolve(val));
   }
