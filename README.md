@@ -12,7 +12,7 @@ Synchonous, single-threaded programming language. Execution cannot be paused.
 
 ## Callbacks
 
-Pass function closed over local scope as a reference to be called by low-level sytems (XHR, fs.readFile, etc).
+Pass function closed over local scope as a reference to be called by low-level sytems (`XMLHttpRequest`, `fs.readFile`, etc).
 
 ```javascript
 import parseJSON from "json-parser";
@@ -109,7 +109,7 @@ abstract class OurPromise<T> {
 
 - Promise can be chained so that they run in sequence.
 - Errors will bubble up to the top.
-- Promise.all turns multiple promises into a single one which returns all results or fails on any error.
+- `Promise.all` turns multiple promises into a single one which returns all results or fails on any error.
 
 ```javascript
 function renderToString([users, articles]) {
@@ -154,7 +154,7 @@ Chaining avoids deep nesting.
 
 #### How do we do error handling? Retry logic?
 
-Either by using the second argument to the `then` callback or with a `.catch`. Because of chaining, if either of these returns a new Promise (such as retrying the request) it will continue the chain.
+Either by using the second argument to the `then` callback or with a `catch`. Because of chaining, if either of these returns a new Promise (such as retrying the request) it will continue the chain.
 
 #### How do we abstract? What if we want an arbitrary number of endpoints to return?
 
@@ -166,14 +166,14 @@ Promise.all waits for multiple promises to finish in parallel.
 
 #### What if two pieces of the app need the same endpoint request? How do we avoid requesting it twice?
 
-Pass each piece of the app the same promise so they can add their own `.then` callback.
+Pass each piece of the app the same promise so they can add their own `then` callback.
 
 ### New Problems
 
 1. Promises start running as soon as you create them.
 2. Promises cannot be cancelled.
 3. Still involves callbacks. Must always remember that in imperitive code the promises are "Currently running, but not complete."
-4. Getting the value REQUIRES `.then`, you cannot get it from the promise value.
+4. Getting the value REQUIRES `then`, you cannot get it from the promise value.
 
 ## async/await
 
@@ -208,7 +208,7 @@ Syntatic sugar which compiles to Promises to make Promises appear imperative and
 
 Code that is written after an `await` will have access to the values and never know about the promise.
 
-### Getting the value REQUIRES `.then`, you cannot get it from the promise value.
+### Getting the value REQUIRES `then`, you cannot get it from the promise value.
 
 Ditto.
 
@@ -247,13 +247,13 @@ Uses `Promise.all` to await on promises in parallel.
 2. Promises cannot be cancelled.
 3. IIFE is awkward.
 4. `await` will work on both Promises AND values.
-5. `.then`, `.catch` and `Promise.all` intermingle with `async/await` and `try/catch` resulting in unclear code paths.
+5. `then`, `catch` and `Promise.all` intermingle with `async/await` and `try/catch` resulting in unclear code paths.
 6. Many programmers will not use `Promise.all` to make the code reads more imperatively, losing parallel performance.
 7. Making a function `async` make it automatically return a Promise, which means any code that uses that function then needs to become `async` as well. Failure to follow this chain will result in code that formerly had a value, now having a promise and as we know the Promise will be "Currently running, but not complete.".
 
 ## Solutions from other Languages
 
-Instead of promises, Rust uses Futures and Elm uses Tasks.
+Instead of promises, Rust uses `Futures` and Elm uses `Tasks`.
 
 Both are lazy. That is they do not run until requested. You could make a Future for a piece of data, but if the page never uses it, it won't be requested.
 
