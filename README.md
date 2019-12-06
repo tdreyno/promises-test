@@ -184,13 +184,21 @@ Syntatic sugar which compiles to Promises to make Promises appear imperative and
 // Work around IIFE (Immediately Invoked Function Expression)
 (async function() {
   try {
-    const users = fetch("/users").then(usersResult => usersResult.json());
+    const users = await fetch("/users").then(usersResult => usersResult.json());
+    
+    // Or:
+    // const usersResult = await fetch("/users");
+    // const users = await usersResult.json();
 
     // Finished running. Can read users.
 
-    const articles = fetch("/articles").then(articlesResult =>
+    const articles = await fetch("/articles").then(articlesResult =>
       articlesResult.json()
     );
+
+    // Or: 
+    // const articlesResult = await fetch("/articles");
+    // const articles = await articlesResult.json();
 
     // Finished running. Can read articles.
 
