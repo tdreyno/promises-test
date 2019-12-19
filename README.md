@@ -89,22 +89,6 @@ Promises are a black box which may contain either nothing, a value or an error.
 - resolved with value
 - rejected with error
 
-### Let's build our own
-
-```typescript
-abstract class OurPromise<T> {
-  constructor(
-    fn: (resolver: (value: T) => void, reject: (error: any) => void) => void
-  ) {}
-
-  abstract then<R>(
-    callback: (value: T, error: any) => R | ThisType<R>
-  ): ThisType<R>;
-
-  abstract catch<R>(callback: (error: any) => R | ThisType<R>): ThisType<T | R>;
-}
-```
-
 ### Chaining
 
 - Promise can be chained so that they run in sequence.
@@ -162,7 +146,7 @@ We can write functions which return promises.
 
 #### How do we run in parallel?
 
-Promise.all waits for multiple promises to finish in parallel.
+`Promise.all` waits for multiple promises to finish in parallel.
 
 #### What if two pieces of the app need the same endpoint request? How do we avoid requesting it twice?
 
@@ -175,6 +159,34 @@ Pass each piece of the app the same promise so they can add their own `then` cal
 3. Still involves callbacks. Must always remember that in imperitive code the promises are "Currently running, but not complete."
 4. Getting the value REQUIRES `then`, you cannot get it from the promise value.
 
+## Code Time!
+
+Let's write some complicated async code.
+
+Load a Github-like page's data.
+
+There are Users with have Projects. Users also have Friends. Those Friends have Projects. There are also global Notifications.
+
+Load all the Projects that the User can access (both theirs and their friends) and load the notifications.
+
+## Stretch goal?
+
+### Let's build our own
+
+```typescript
+abstract class OurPromise<T> {
+  constructor(
+    fn: (resolver: (value: T) => void, reject: (error: any) => void) => void
+  ) {}
+
+  abstract then<R>(
+    callback: (value: T, error: any) => R | ThisType<R>
+  ): ThisType<R>;
+
+  abstract catch<R>(callback: (error: any) => R | ThisType<R>): ThisType<T | R>;
+}
+```
+
 ## async/await
 
 Syntatic sugar which compiles to Promises to make Promises appear imperative and synchronous. Uses traditional `try/catch` for error handling.
@@ -185,7 +197,7 @@ Syntatic sugar which compiles to Promises to make Promises appear imperative and
 (async function() {
   try {
     const users = await fetch("/users").then(usersResult => usersResult.json());
-    
+
     // Or:
     // const usersResult = await fetch("/users");
     // const users = await usersResult.json();
@@ -196,7 +208,7 @@ Syntatic sugar which compiles to Promises to make Promises appear imperative and
       articlesResult.json()
     );
 
-    // Or: 
+    // Or:
     // const articlesResult = await fetch("/articles");
     // const articles = await articlesResult.json();
 
