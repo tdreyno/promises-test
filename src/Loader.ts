@@ -1,16 +1,26 @@
-import { Result, User, NotificationsAPI, randomResolve } from "./LoaderUtils";
+import { Result, User, NotificationsAPI } from "./LoaderUtils";
+import { flatten } from "lodash";
 
 export default function Loader(
   user: User,
   notificationsApi: NotificationsAPI
 ): Promise<Result> {
-  // Available APIs
-  // user.getFriends();
-  // user.getProjects();
-  // notificationsApi.getMessages();
+  return Promise.all([
+    notificationsApi.getMessages(),
 
-  return Promise.resolve({
-    projectNames: [],
-    notifications: []
-  });
+    Promise.all([
+      user.getProjects(),
+
+      user
+        .getFriends()
+        .then(friends =>
+          Promise.all(friends.map(friend => friend.getProjects())).then(flatten)
+        )
+    ]).then(([myProjects, friendsProjects]) =>
+      myProjects.concat(friendsProjects).map(project => project.name)
+    )
+  ]).then(([notifications, projectNames]) => ({
+    projectNames,
+    notifications
+  }));
 }
