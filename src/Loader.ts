@@ -1,7 +1,8 @@
 import { Result, User, NotificationsAPI } from "./LoaderUtils";
 import { flatten } from "lodash";
+import { Task } from "@tdreyno/pretty-please";
 
-export default function Loader(
+function Loader(
   user: User,
   notificationsApi: NotificationsAPI
 ): Promise<Result> {
@@ -23,4 +24,29 @@ export default function Loader(
     projectNames,
     notifications
   }));
+}
+
+export default function LoaderTask(
+  user: User,
+  notificationsApi: NotificationsAPI
+): Promise<Result> {
+  return Task.map3(
+    notifications => myProjects => friendsProjects => ({
+      notifications,
+
+      projectNames: myProjects
+        .concat(friendsProjects)
+        .map(project => project.name)
+    }),
+
+    notificationsApi.getMessagesTask(),
+
+    user.getProjectsTask(),
+
+    user
+      .getFriendsTask()
+      .map(friends => friends.map(friend => friend.getProjectsTask()))
+      .chain(Task.all)
+      .map(flatten)
+  ).toPromise();
 }

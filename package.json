@@ -17,6 +17,7 @@
     "yarn": "1.19.2"
   },
   "dependencies": {
+    "@tdreyno/pretty-please": "^1.2.0",
     "@types/faker": "^4.1.8",
     "@types/lodash": "^4.14.149",
     "faker": "^4.1.0",
