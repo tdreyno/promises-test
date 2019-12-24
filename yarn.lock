@@ -286,10 +286,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@tdreyno/pretty-please@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@tdreyno/pretty-please/-/pretty-please-1.2.0.tgz#6068f5c96228e7cb3c14a98f6b276d99276eab87"
-  integrity sha512-mcfaCGoMHNtoEujQLVD2PCd96JiTRPfDCS0neb47/ZhJVCY8w+RSfAqbHTg/YGUFVW+hYPCZga4JoeqylehulA==
+"@tdreyno/pretty-please@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@tdreyno/pretty-please/-/pretty-please-1.2.1.tgz#2bad6f9b9c56ac6e27479161d47c76e8aca2030c"
+  integrity sha512-3rTa6fOuEIHoKgmVIYlPiB/blcnarunujLK1gIp67jc25UcH+bBeB0gRMSyUkxkTaPDyrHlVm53CdZb59p/J8g==
 
 "@types/babel__core@^7.1.0":
   version "7.1.3"

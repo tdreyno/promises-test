@@ -39,13 +39,12 @@ export default function LoaderTask(
         .map(project => project.name)
     }),
 
-    notificationsApi.getMessagesTask(),
+    notificationsApi.getMessages(),
 
-    user.getProjectsTask(),
+    user.getProjects(),
 
-    user
-      .getFriendsTask()
-      .map(friends => friends.map(friend => friend.getProjectsTask()))
+    Task.fromLazyPromise(() => user.getFriends())
+      .map(friends => friends.map(friend => friend.getProjects()))
       .chain(Task.all)
       .map(flatten)
   ).toPromise();

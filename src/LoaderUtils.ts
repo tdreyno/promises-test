@@ -1,6 +1,5 @@
 import * as faker from "faker";
 import { flatten } from "lodash";
-import { Task } from "@tdreyno/pretty-please";
 
 export type Result = {
   projectNames: string[];
@@ -18,10 +17,6 @@ export class NotificationsAPI {
 
   getMessages(): Promise<string[]> {
     return randomResolve(this.messages);
-  }
-
-  getMessagesTask(): Task<any, string[]> {
-    return Task.fromLazyPromise(() => randomResolve(this.messages));
   }
 
   __notificationsDontCheat() {
@@ -52,14 +47,6 @@ export class User {
 
   getFriends(): Promise<User[]> {
     return randomResolve(this.friends);
-  }
-
-  getProjectsTask(): Task<any, Project[]> {
-    return Task.fromLazyPromise(() => randomResolve(this.projects));
-  }
-
-  getFriendsTask(): Task<any, User[]> {
-    return Task.fromLazyPromise(() => randomResolve(this.friends));
   }
 
   __projectNamesDontCheat(): string[] {
